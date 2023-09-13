@@ -15,11 +15,11 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
   @Post()
-  addUser(
+  async addUser(
     @Body('email') prodEmail: string,
     @Body('password') prodPass: string,
   ) {
-    const generatedId = this.usersService.insertUser(
+    const generatedId = await this.usersService.insertUser(
       prodEmail,
       prodPass,
     );
@@ -27,8 +27,8 @@ export class UsersController {
   }
 
   @Get()
-  getAllUsers() {
-    return this.usersService.getUsers();
+  async getAllUsers() {
+    return await this.usersService.getUsers();
   }
 
   @Get(':id')
@@ -37,19 +37,18 @@ export class UsersController {
   }
 
   @Patch(':id')
-  updateUser(
+  async updateUser(
     @Param('id') userId: string,
     @Body('email') prodEmail: string,
     @Body('password') prodPass: string,
     @Body('price') prodPrice: number,
   ) {
-    this.usersService.updateUser(userId, prodEmail, prodPass);
-    return null;
+    return await this.usersService.updateUser(userId, prodEmail, prodPass);
   }
 
   @Delete(':id')
-  removeUser(@Param('id') userId: string) {
-    this.usersService.deleteUser(userId);
+  async removeUser(@Param('id') userId: string) {
+    await this.usersService.deleteUser(userId);
     return null;
   }
 }

@@ -1,47 +1,49 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-
+import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.model';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UsersService {
   private users: User[] = [];
 
-  insertUser(email: string, password: string) {
-    const userId = crypto.randomUUID();
-    const newUser = new User(email, password);
-    this.users.push(newUser);
-    return userId;
+  constructor(@InjectModel('User') private readonly userModel: Model<User>) { }
+
+  async insertUser(email: string, password: string) {
+    const newUser = new this.userModel({ email, password });
+    const result = await newUser.save();
+    return result.id;
   }
 
-  getUsers() {
-    return [...this.users];
+  async getUsers() {
+    return await this.userModel.find().exec();
   }
 
-  getSingleUser(userId: string) {
-    const user = this.findUser(userId)[0];
-    return { ...user };
+  async getSingleUser(userId: string) {
+    const user = await this.findUser(userId);
+    return { id: user.id, email: user.email, password: user.password };
   }
 
-  updateUser(userId: string, email:string, password: string) {
-    const [user, userIndex] = this.findUser(userId);
-    const updatedUser = { ...user };
+  async updateUser(userId: string, email: string, password: string) {
+    const updatedUser = await this.findUser(userId);
     if (email && password) {
       updatedUser.password = password;
     }
-    this.users[userIndex] = updatedUser;
+    await updatedUser.save();
+    return await this.getSingleUser(userId);
   }
 
-  deleteUser(userId: string) {
-      const index = this.findUser(userId)[1];
-      this.users.splice(index, 1);
+  async deleteUser(userId: string) {
+    await this.userModel.deleteOne({ _id: userId }).exec();
   }
 
-  private findUser(id: string): [User, number] {
-    const userIndex = this.users.findIndex(user => user.id === id);
-    const user = this.users[userIndex];
-    if (!user) {
+  async findUser(id: string) {
+    let user;
+    try {
+      user = await this.userModel.findById(id);
+    } catch (error) {
       throw new NotFoundException('Could not find user.');
     }
-    return [user, userIndex];
+    return user;
   }
 }
