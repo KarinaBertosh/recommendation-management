@@ -13,6 +13,7 @@
   },
   "plugins": ["react", "@typescript-eslint"],
   "rules": {
+    "linebreak-style": 0,
     "react/jsx-props-no-spreading": "off",
     "no-param-reassign": [
       "error",
@@ -21,7 +22,7 @@
         "ignorePropertyModificationsFor": ["state"]
       }
     ],
-    "linebreak-style": ["error", "unix"],
+    // "linebreak-style": ["error", "unix"],
     "quotes": ["error", "single"],
     "import/prefer-default-export": "off"
   }
