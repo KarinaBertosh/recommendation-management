@@ -1,16 +1,21 @@
-# dependencies
-/node_modules
+.idea
+/client/node_modules
+/client/.pnp
+/client/.pnp.js
 
-# System Files
-.DS_Store
-Thumbs.db
-[Dd]esktop.ini
 
-# Links
-*.lnk
-.idea/
-*.PEM
-.vscode/
+/coverage
 
-# Logs
-npm-debug.log
+/build
+
+/client/.DS_Store
+/client/.env.local
+/client/.env.development.local
+/client/.env.test.local
+/client/.env.production.local
+
+/client/npm-debug.log*
+/client/yarn-debug.log*
+/client/yarn-error.log*
+
+/server/node_modules
