@@ -22,7 +22,6 @@
         "ignorePropertyModificationsFor": ["state"]
       }
     ],
-    // "linebreak-style": ["error", "unix"],
     "quotes": ["error", "single"],
     "import/prefer-default-export": "off"
   }
