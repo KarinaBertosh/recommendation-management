@@ -2,6 +2,7 @@ import React from 'react';
 import './style.scss';
 import { useTranslation } from 'react-i18next';
 import { MyModal } from '../Modal/Modal';
+import { typeModal } from '../../utils/constants';
 
 function Header(): JSX.Element {
   const [t] = useTranslation();
@@ -10,12 +11,12 @@ function Header(): JSX.Element {
 
   const openLoginModal = () => {
     setModalShow(true);
-    setNameModal('1');
+    setNameModal(typeModal.login);
   };
 
   const openRegModal = () => {
     setModalShow(true);
-    setNameModal('2');
+    setNameModal(typeModal.reg);
   };
 
   return (

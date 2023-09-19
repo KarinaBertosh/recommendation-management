@@ -19,6 +19,8 @@ export class UsersController {
     @Body('email') prodEmail: string,
     @Body('password') prodPass: string,
   ) {
+    console.log(1, prodEmail, prodPass);
+    
     const generatedId = await this.usersService.insertUser(
       prodEmail,
       prodPass,
