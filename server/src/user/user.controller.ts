@@ -3,9 +3,6 @@ import {
   Post,
   Body,
   Get,
-  Param,
-  Patch,
-  Delete,
 } from '@nestjs/common';
 
 import { UsersService } from './user.service';
@@ -14,43 +11,27 @@ import { UsersService } from './user.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
-  @Post()
-  async addUser(
-    @Body('email') prodEmail: string,
-    @Body('password') prodPass: string,
-  ) {
-    console.log(1, prodEmail, prodPass);
-    
-    const generatedId = await this.usersService.insertUser(
-      prodEmail,
-      prodPass,
-    );
-    return { id: generatedId };
-  }
-
   @Get()
   async getAllUsers() {
     return await this.usersService.getUsers();
   }
 
-  @Get(':id')
-  getUser(@Param('id') userId: string) {
-    return this.usersService.getSingleUser(userId);
-  }
-
-  @Patch(':id')
-  async updateUser(
-    @Param('id') userId: string,
+  @Post('/reg')
+  async addUser(
     @Body('email') prodEmail: string,
     @Body('password') prodPass: string,
-    @Body('price') prodPrice: number,
   ) {
-    return await this.usersService.updateUser(userId, prodEmail, prodPass);
+    const newUser = await this.usersService.registration(
+      prodEmail,
+      prodPass,
+    );
+    return newUser;
   }
 
-  @Delete(':id')
-  async removeUser(@Param('id') userId: string) {
-    await this.usersService.deleteUser(userId);
-    return null;
+  @Post('/login')
+  async getUserByEmail(
+    @Body('email') prodEmail: string,
+    @Body('password') prodPass: string,) {
+    return await this.usersService.login(prodEmail, prodPass);
   }
 }

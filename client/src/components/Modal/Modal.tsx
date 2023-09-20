@@ -1,37 +1,53 @@
 import React, { useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Form, Spinner } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useTranslation } from 'react-i18next';
-import { typeModal } from '../../utils/constants';
+import { baseUrl, typeModal } from '../../utils/constants';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type IProps = {
   show: boolean;
   nameModal: string | undefined;
   onHide: () => void;
 };
-const baseUrl = 'http://localhost:5000/';
 
 export const MyModal: React.FC<IProps> = (props): JSX.Element => {
-  const { show, nameModal, onHide } = props;
   const [t] = useTranslation();
+  const { show, nameModal, onHide } = props;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
 
   const handlerEmail = (value: string) => setEmail(value);
   const handlerPassword = (value: string) => setPassword(value);
 
-  const sendData = async () => {
-    const getUserUrl = `${baseUrl}user`;
-    console.log(1, getUserUrl);
-    if (email && password) {
-      const user =
-        await axios
-          .post(getUserUrl, { email, password })
-          .then(data => console.log(data));
+  const regUrl = `${baseUrl}user/reg`;
+  const loginUrl = `${baseUrl}user/login`;
 
-      console.log(15, user);
+  const error = () => toast.error("Failed to send data. An error has occurred.", {
+    position: toast.POSITION.TOP_LEFT
+  });
+  const success = () => toast.success("Success Notification !", {
+    position: toast.POSITION.TOP_CENTER
+  });
+
+  const sendData = async () => {
+    if (email && password) {
+      try {
+        setIsLoading(true);
+        nameModal === typeModal.reg ? await axios.post(regUrl, { email, password }) : await axios.post(loginUrl, { email: email, password: password });
+        success();
+      }
+      catch (e) {
+        console.error(e);
+        error();
+      }
+      finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -63,10 +79,12 @@ export const MyModal: React.FC<IProps> = (props): JSX.Element => {
             <Form.Check type="checkbox" label={`${t('modal.saveData')}`} />
           </Form.Group>
         </Form>
-        <Button variant="primary" type="submit" onClick={async () => await sendData()}>
+        <Button variant="primary" type="submit" disabled={isLoading} onClick={sendData}>
           {t('button.submit')}
+          {isLoading && <Spinner size="sm" />}
         </Button>
       </Modal.Body>
+      <ToastContainer />
     </Modal>
   );
 };

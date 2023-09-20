@@ -1,49 +1,53 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.model';
 import { Model } from 'mongoose';
+import { PasswordNotCorrect, UserAlreadyExists, UserNotExist } from 'src/errors/errors';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
-
   constructor(@InjectModel('User') private readonly userModel: Model<User>) { }
-
-  async insertUser(email: string, password: string) {
-    const newUser = new this.userModel({ email, password });
-    const result = await newUser.save();
-    return result.id;
-  }
 
   async getUsers() {
     return await this.userModel.find().exec();
   }
 
-  async getSingleUser(userId: string) {
-    const user = await this.findUser(userId);
-    return { id: user.id, email: user.email, password: user.password };
-  }
-
-  async updateUser(userId: string, email: string, password: string) {
-    const updatedUser = await this.findUser(userId);
-    if (email && password) {
-      updatedUser.password = password;
+  async registration(email: string, password: string) {
+    const isExistUser = await this.isExistedUser(email);
+    if (!isExistUser) {
+      try {
+        const newUser = new this.userModel({ email, password });
+        return await newUser.save();
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      throw new UserNotExist();
     }
-    await updatedUser.save();
-    return await this.getSingleUser(userId);
   }
 
-  async deleteUser(userId: string) {
-    await this.userModel.deleteOne({ _id: userId }).exec();
-  }
-
-  async findUser(id: string) {
-    let user;
+  async login(email: string, password: string) {
     try {
-      user = await this.userModel.findById(id);
+      const isExistedUser = await this.isExistedUser(email);
+      if (isExistedUser) {
+        const user = await this.findUser(email);
+        if (user.password !== password) throw new PasswordNotCorrect();
+        return user;
+      } else {
+        throw new UserNotExist();
+      }
     } catch (error) {
-      throw new NotFoundException('Could not find user.');
+      console.log(error);
+      throw new UserNotExist();
     }
-    return user;
+  }
+
+  async findUser(email: string) {
+    return await this.userModel.findOne({ email: email });
+  }
+
+  async isExistedUser(email: string) {
+    const user = await this.findUser(email);
+    return !!user;
   }
 }
