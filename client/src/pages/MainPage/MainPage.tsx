@@ -3,6 +3,8 @@ import './style.scss';
 
 export const MainPage = () => {
   return (
-    <div className="content">Main page </div>
+    <div className="content">
+      Main
+    </div>
   );
 };

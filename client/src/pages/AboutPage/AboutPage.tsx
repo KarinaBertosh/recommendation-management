@@ -3,7 +3,7 @@ import './style.scss';
 import { useTranslation } from 'react-i18next';
 import { DefaultCarousel } from '../../components/DefaultCarousel/DefaultCarousel';
 
-function LandingPage() {
+export const AboutPage = () => {
   const [t] = useTranslation();
 
   return (
@@ -16,6 +16,4 @@ function LandingPage() {
       </div>
     </div>
   );
-}
-
-export default LandingPage;
+};

@@ -2,7 +2,9 @@
     "button": {
         "signIn": "Sign In",
         "signUp": "Sign Up",
-        "submit": "Submit"
+        "submit": "Submit",
+        "about": "About us",
+        "main": "Main"
     },
     "modal": {
         "email": "Email address",
