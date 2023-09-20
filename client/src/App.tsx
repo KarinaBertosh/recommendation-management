@@ -7,6 +7,7 @@ import Footer from './components/Footer/Footer';
 import './App.scss';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
 import WelcomePage from './pages/Landing/WelcomePage';
+import { MainPage } from './pages/MainPage/MainPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/" element={<WelcomePage />} />
+        <Route path="/main" element={<MainPage />} />
       </Routes>
       <Footer />
     </div>

@@ -7,6 +7,7 @@ import { baseUrl, typeModal } from '../../utils/constants';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 type IProps = {
   show: boolean;
@@ -16,6 +17,7 @@ type IProps = {
 
 export const MyModal: React.FC<IProps> = (props): JSX.Element => {
   const [t] = useTranslation();
+  const navigate = useNavigate();
   const { show, nameModal, onHide } = props;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>();
@@ -30,16 +32,15 @@ export const MyModal: React.FC<IProps> = (props): JSX.Element => {
   const error = () => toast.error("Failed to send data. An error has occurred.", {
     position: toast.POSITION.TOP_LEFT
   });
-  const success = () => toast.success("Success Notification !", {
-    position: toast.POSITION.TOP_CENTER
-  });
 
   const sendData = async () => {
     if (email && password) {
       try {
         setIsLoading(true);
-        nameModal === typeModal.reg ? await axios.post(regUrl, { email, password }) : await axios.post(loginUrl, { email: email, password: password });
-        success();
+        const response = nameModal === typeModal.reg ? await axios.post(regUrl, { email, password }) : await axios.post(loginUrl, { email: email, password: password });
+        if (response.request.status === 201) navigate('/main');
+        setIsLoading(false);
+        onHide();
       }
       catch (e) {
         console.error(e);
