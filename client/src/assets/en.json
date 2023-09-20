@@ -10,6 +10,8 @@
         "saveData": "save data for quick login"
     },
     "welcomePage": {
-        "description": "Hello detective! Are you looking for interesting films, books or maybe games? Then you are in the right place. In order to receive our recommendations you need to log in."
+        "hello": "Hello detective!",
+        "description": "Recommendations are a place where you can find something that really suits you based on your preferences. Movies, games, books, etc.",
+        "auth": " Authorized users can use search, create and add reviews, and rate other reviews.."
     }
 }
